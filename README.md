@@ -11,7 +11,7 @@ In Xcode:
 
 1. Go to File → Add Packages
 2. Enter: `https://github.com/Davidon4/reddimon-attribution-ios`
-3. Select version: 1.0.1 or higher
+3. Select version: 1.0.2 or higher
 
 ## Usage
 
