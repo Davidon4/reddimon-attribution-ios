@@ -36,17 +36,3 @@ jobs:
             3. Select version: ${{ github.ref_name }}
           draft: false
           prerelease: false
-
-      - name: Build Documentation
-        run: |
-          swift doc generate Sources/Attribution --module-name Attribution
-
-      - name: Upload Documentation
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./docs
-          asset_name: documentation.zip
-          asset_content_type: application/zip
