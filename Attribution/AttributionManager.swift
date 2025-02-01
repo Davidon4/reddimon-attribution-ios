@@ -53,37 +53,25 @@ public class AttributionManager {
             return
         }
         
+        // Extract attribution data
         var attributionParams: [String: String] = [:]
-        
         for item in queryItems {
             attributionParams[item.name] = item.value
         }
         
-        // Store attribution data for later use
-        self.referralData = attributionParams
+        // Store attribution data
+        self.attributionData = attributionParams
         
-        // If already installed, send attribution immediately
-        if installAttributed {
-            sendAttributionData()
-        }
+        // Send attribution data
+        sendAttributionData()
     }
     
     private func sendAttributionData() {
-        guard let referralData = self.referralData else { return }
+        var data = attributionData
+        data["timestamp"] = Date().timeIntervalSince1970
+        data["device_id"] = UIDevice.current.identifierForVendor?.uuidString ?? ""
         
-        var attributionEvent: [String: Any] = [
-            "timestamp": Date().timeIntervalSince1970,
-            "platform": "ios",
-            "app_id": Bundle.main.bundleIdentifier ?? "",
-            "device_id": UIDevice.current.identifierForVendor?.uuidString ?? ""
-        ]
-        
-        // Add referral data
-        for (key, value) in referralData {
-            attributionEvent[key] = value
-        }
-        
-        sendEvent(attributionEvent, endpoint: AttributionConfig.Network.Endpoints.attribution)
+        sendEvent(data, endpoint: AttributionConfig.Network.Endpoints.attribution)
     }
     
     // MARK: - Install Tracking
@@ -141,47 +129,20 @@ public class AttributionManager {
     ///   }
     ///   ```
     public func trackInstall(completion: @escaping (Bool) -> Void) {
-        guard !installAttributed else {
-            completion(false)
-            return
+        var installData: [String: Any] = [
+            "timestamp": Date().timeIntervalSince1970,
+            "device_id": UIDevice.current.identifierForVendor?.uuidString ?? "",
+            "platform": "ios",
+            "app_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        ]
+        
+        // Add attribution data if available
+        for (key, value) in attributionData {
+            installData[key] = value
         }
         
-        let fingerprint = generateDeviceFingerprint()
-        getPublicIPAddress { [weak self] ipAddress in
-            guard let self = self else { return }
-            
-            var installData: [String: Any] = [
-                "install_timestamp": Date().timeIntervalSince1970,
-                "device_type": fingerprint.model,
-                "ios_version": fingerprint.systemVersion,
-                "app_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
-                "device_id": fingerprint.deviceId,
-                "app_id": Bundle.main.bundleIdentifier ?? "",
-                "screen_resolution": fingerprint.screenResolution,
-                "timezone": fingerprint.timezone,
-                "language": fingerprint.language
-            ]
-            
-            if let ip = ipAddress {
-                installData["ip_address"] = ip
-            }
-            
-            // Add referral data if available
-            if let referralData = self.referralData {
-                for (key, value) in referralData {
-                    installData[key] = value
-                }
-            }
-            
-            self.sendEvent(installData, endpoint: AttributionConfig.Network.Endpoints.install) { [weak self] result in
-                switch result {
-                case .success:
-                    self?.installAttributed = true
-                    completion(true)
-                case .failure:
-                    completion(false)
-                }
-            }
+        sendEvent(installData, endpoint: AttributionConfig.Network.Endpoints.install) { success in
+            completion(success)
         }
     }
     
@@ -240,24 +201,22 @@ public class AttributionManager {
     ///   ```
     public func trackConversion(type: String, value: Double? = nil, currency: String? = nil) {
         var conversionData: [String: Any] = [
-            AttributionConfig.Parameters.conversionType: type,
+            "type": type,
             "timestamp": Date().timeIntervalSince1970,
             "device_id": UIDevice.current.identifierForVendor?.uuidString ?? ""
         ]
         
         if let value = value {
-            conversionData[AttributionConfig.Parameters.conversionValue] = value
+            conversionData["value"] = value
         }
         
         if let currency = currency {
-            conversionData[AttributionConfig.Parameters.currency] = currency
+            conversionData["currency"] = currency
         }
         
-        // Add referral data if available
-        if let referralData = self.referralData {
-            for (key, value) in referralData {
-                conversionData[key] = value
-            }
+        // Add attribution data if available
+        for (key, value) in attributionData {
+            conversionData[key] = value
         }
         
         sendEvent(conversionData, endpoint: AttributionConfig.Network.Endpoints.conversion)

@@ -1,3 +1,9 @@
+// Initialize SDK
+AttributionManager.initialize(
+    apiKey: "your_api_key",
+    baseURL: "https://reddimon.com/"
+)
+
 // Track a purchase event
 AttributionManager.shared.trackEvent(AttributionConfig.Events.purchase, parameters: [
     AttributionConfig.Parameters.revenue: 9.99,
@@ -42,4 +48,18 @@ AttributionManager.shared.trackActivation(
 // Track activation
 AttributionManager.shared.trackConversion(
     type: AttributionConfig.ConversionTypes.activation
-) 
+)
+
+// Handle creator's attribution link
+func handleCreatorLink(_ url: URL) {
+    AttributionManager.shared.handleAttributionLink(url)
+}
+
+// Track conversion (e.g., when user subscribes)
+func userSubscribed() {
+    AttributionManager.shared.trackConversion(
+        type: "subscription",
+        value: 99.99,
+        currency: "USD"
+    )
+} 

@@ -1,11 +1,10 @@
 import Foundation
 
 public struct AttributionConfig {
-    static let version = "1.0.0"
+    static let version = "1.0.1"
     
     struct Network {
         static let defaultTimeout: TimeInterval = 30
-        static let retryInterval: TimeInterval = 2
         
         struct Endpoints {
             static let install = "installs"
@@ -15,25 +14,17 @@ public struct AttributionConfig {
     }
     
     struct Parameters {
-        // Attribution parameters
-        static let referralCode = "referral_code"
+        // Core attribution parameters
         static let creatorId = "creator_id"
-        static let campaign = "campaign"
-        static let clickId = "click_id"
+        static let publisherId = "publisher_id"
+        static let campaignId = "campaign_id"
+        static let source = "source"
         
-        // Install parameters
-        static let installId = "install_id"
+        // Event parameters
         static let deviceId = "device_id"
-        static let appId = "app_id"
-        
-        // Conversion parameters
-        static let conversionType = "conversion_type"
-        static let conversionValue = "conversion_value"
+        static let timestamp = "timestamp"
+        static let value = "value"
         static let currency = "currency"
-        
-        // User parameters
-        static let userId = "user_id"
-        static let userProperties = "user_properties"
     }
     
     struct ConversionTypes {

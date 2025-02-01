@@ -1,7 +1,7 @@
 # iOS Attribution SDK
 
-![Test](https://github.com/yourusername/ios-attribution-sdk/workflows/Test/badge.svg)
-![SwiftLint](https://github.com/yourusername/ios-attribution-sdk/workflows/SwiftLint/badge.svg)
+![Test](https://github.com/Davidon4/reddimon-attribution-ios/workflows/Test/badge.svg)
+![SwiftLint](https://github.com/Davidon4/reddimon-attribution-ios/workflows/SwiftLint/badge.svg)
 
 ## Installation
 
@@ -63,4 +63,4 @@ Full documentation is available [here](https://github.com/Davidon4/reddimon-attr
 ## License
 
 MIT License
-"# reddimon-attribution-ios" 
+"# reddimon-attribution-ios"
