@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    name: Test iOS SDK
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "14.2"
+
+      - name: Install Dependencies
+        run: |
+          gem install xcpretty
+
+      - name: Build and Test
+        run: |
+          xcodebuild test \
+            -scheme AttributionSDK \
+            -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.2' \
+            | xcpretty
