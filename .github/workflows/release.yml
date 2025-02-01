@@ -19,6 +19,21 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: Release ${{ github.ref_name }}
+          body: |
+            # Reddimon Attribution SDK ${{ github.ref_name }}
+
+            ## Features
+            - Track app installations
+            - Handle attribution links
+            - Track conversions and subscriptions
+            - Fraud prevention
+            - Retry logic and offline caching
+
+            ## Installation
+            In Xcode:
+            1. Go to File → Add Packages
+            2. Enter: `https://github.com/Davidon4/reddimon-attribution-ios`
+            3. Select version: ${{ github.ref_name }}
           draft: false
           prerelease: false
 
