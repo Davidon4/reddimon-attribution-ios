@@ -86,6 +86,12 @@ func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigatio
 }
 ```
 
+## Requirements
+
+- iOS 13.0+
+- Xcode 13.0+
+- Swift 5.5+
+
 ## Notes
 
 - For RevenueCat, Superwall, or SwiftyStoreKit users: Track the underlying StoreKit transaction using `trackStoreKitPurchase`
