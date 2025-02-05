@@ -8,16 +8,18 @@ enum AttributionError: Error {
 }
 
 class NetworkService {
-    private let baseURL: String
+    private let baseUrl: String
     private let apiKey: String
+    private let appId: String
     
-    init(baseURL: String, apiKey: String) {
-        self.baseURL = baseURL
+    init(baseUrl: String, apiKey: String, appId: String) {
+        self.baseUrl = baseUrl
         self.apiKey = apiKey
+        self.appId = appId
     }
     
     func sendEvent(_ event: [String: Any], endpoint: String, completion: @escaping (Result<Bool, AttributionError>) -> Void) {
-        guard let url = URL(string: "\(baseURL)/\(endpoint)") else {
+        guard let url = URL(string: "\(baseurl)/\(endpoint)") else {
             completion(.failure(.invalidURL))
             return
         }
@@ -27,9 +29,14 @@ class NetworkService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("ios-sdk-\(AttributionConfig.version)", forHTTPHeaderField: "X-SDK-Version")
+        request.setValue(appId, forHTTPHeaderField: "X-App-ID")
+        request.timeoutInterval = AttributionConfig.Network.defaultTimeout
         
         do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: event)
+            var eventWithAppId = event
+            eventWithAppId["app_id"] = appId
+            
+            request.httpBody = try JSONSerialization.data(withJSONObject: eventWithAppId)
         } catch {
             completion(.failure(.networkError(error)))
             return

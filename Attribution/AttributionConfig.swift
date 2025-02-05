@@ -1,35 +1,43 @@
 import Foundation
 
 public struct AttributionConfig {
-    static let version = "1.0.5"
+    static let version = "1.0.6"
     
     struct Network {
         static let defaultTimeout: TimeInterval = 30
         
         struct Endpoints {
-            static let install = "installs"
-            static let conversion = "conversions"
-            static let attribution = "attribution"
+            static let install = "installations"
+            static let subscription = "subscriptions"
         }
     }
     
     struct Parameters {
         // Core attribution parameters
-        static let creatorId = "creator_id"
-        static let publisherId = "publisher_id"
-        static let campaignId = "campaign_id"
-        static let source = "source"
+        static let shortCode = "short_code"
+        static let attributionUrl = "attribution_url"
+        static let clickTimestamp = "click_timestamp"
+        static let installTimestamp = "install_timestamp"
         
-        // Event parameters
+        // Installation parameters
+        static let platform = "platform"
+        static let deviceType = "device_type"
         static let deviceId = "device_id"
-        static let timestamp = "timestamp"
-        static let value = "value"
+        static let installSource = "install_source"
+        
+        // Subscription parameters
+        static let subscriptionId = "subscription_id"
+        static let planType = "plan_type"
+        static let amount = "amount"
         static let currency = "currency"
+        static let status = "status"
+        static let interval = "interval"          // "monthly", "yearly"
+        static let subscriptionDate = "subscription_date"
     }
     
-    struct ConversionTypes {
-        static let subscription = "subscription"
-        static let activation = "activation"
-        static let purchase = "purchase"
+    struct SubscriptionStatus {
+        static let active = "active"
+        static let cancelled = "cancelled"
+        static let expired = "expired"
     }
 } 

@@ -22,4 +22,4 @@ let package = Package(
             dependencies: ["ReddimonAttribution"],
             path: "Tests")
     ]
-) 
+)
