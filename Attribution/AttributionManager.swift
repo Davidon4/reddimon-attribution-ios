@@ -1,8 +1,5 @@
 import Foundation
 import UIKit
-#if canImport(RevenueCat)
-import RevenueCat
-#endif
 #if canImport(StoreKit)
 import StoreKit
 #endif
@@ -11,18 +8,15 @@ public class AttributionManager {
     public static let shared = AttributionManager()
     private let networkService: NetworkService
     private var attributionData: [String: Any]?
-    private var appId: String
     
     public static func initialize(apiKey: String, baseUrl: String, appId: String) {
         if let shared = shared as? AttributionManager {
-            shared.networkService = NetworkService(baseUrl: baseUrl, apiKey: apiKey)
-            shared.appId = appId
+            shared.networkService = NetworkService(baseUrl: baseUrl, apiKey: apiKey, appId: appId)
         }
     }
     
     private init() {
-        self.networkService = NetworkService(baseUrl: "", apiKey: "")
-        self.appId = ""
+        self.networkService = NetworkService(baseUrl: "", apiKey: "", appId: "")
     }
     
     public func handleAttributionLink(_ url: URL) {
@@ -48,7 +42,6 @@ public class AttributionManager {
         let appStoreURL = URL(string: "https://apps.apple.com/app/id\(appId)")!
             UIApplication.shared.open(appStoreURL)
         }
-    }
     
     private func trackInstall(completion: @escaping (Bool) -> Void) {
         guard let attributionData = UserDefaults.standard.dictionary(forKey: "pending_attribution"),
@@ -111,7 +104,7 @@ public class AttributionManager {
         }
     }
     
-    // Payment provider specific methods
+    // StoreKit-based subscriptions (App Store)
     #if canImport(StoreKit)
     public func trackStoreKitPurchase(_ transaction: SKPaymentTransaction, _ product: SKProduct) {
         trackSubscription(
@@ -124,19 +117,8 @@ public class AttributionManager {
     }
     #endif
     
-    #if canImport(RevenueCat)
-    public func trackRevenueCatPurchase(_ purchase: Purchase) {
-        trackSubscription(
-            subscriptionId: purchase.purchaseId,
-            planType: purchase.productIdentifier,
-            amount: purchase.price,
-            currency: "USD",
-            interval: purchase.periodType == .annual ? "yearly" : "monthly"
-        )
-    }
-    #endif
-    
-    public func trackStripeSubscription(
+    // Web-based subscriptions (Stripe, etc.)
+    public func trackWebPurchase(
         subscriptionId: String,
         planType: String,
         amount: Double,
@@ -146,7 +128,6 @@ public class AttributionManager {
             subscriptionId: subscriptionId,
             planType: planType,
             amount: amount,
-            currency: "USD",
             interval: interval
         )
     }
