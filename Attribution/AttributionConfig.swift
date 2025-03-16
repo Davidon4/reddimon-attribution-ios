@@ -1,7 +1,7 @@
 import Foundation
 
 public struct AttributionConfig {
-    static let version = "1.0.7"
+    static let version = "1.1.0"
     
     struct Network {
         static let defaultTimeout: TimeInterval = 30
